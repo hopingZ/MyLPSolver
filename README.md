@@ -4,7 +4,13 @@
 - 两阶段法
 - 大M法
 
-程序会把计算过程输出出来(所以可以用这个做作业)
+还有灵敏度分析，包括：
+- 改A
+- 改b
+- 改c
+- 增加约束
+
+程序会把计算过程输出出来，所以可以用这个抄(划掉)做作业
 
 # Example
 ## 求解
@@ -104,4 +110,41 @@ s.t.
 最优解为： [      2.0000       6.0000       2.0000       0.0000       0.0000] 
 最优值为： 36.0 
 ```
- 
+
+## 灵敏度分析
+```
+from inequality import *
+from lp import LP
+
+linear_programming = LP(...)
+solution, best_value, end_simplex_tableau, basic_variable_idxs = linear_programming.xx_solve()
+
+# 改A
+linear_programming.modify_A(
+    end_simplex_tableau, 
+    basic_variable_idxs, 
+    variable=x1, 
+    new_p=[[0], [5]]
+)
+
+# 改b
+linear_programming.modify_b(
+    end_simplex_tableau,
+    basic_variable_idxs,
+    new_b=[
+        [4],
+        [6],
+        [6]
+    ]
+)
+
+# 改c
+lp.modify_c(end_simplex_tableau, basic_variable_idxs, variable=x3, param=6)
+
+# 添加约束
+lp.modify_by_adding_constraints(
+    end_simplex_tableau, 
+    basic_variable_idxs, 
+    Inequality(2 * x1 + 3 * x2 + 5 * x3, "<=", 50)
+)
+```
